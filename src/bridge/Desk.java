@@ -1,5 +1,7 @@
 package bridge;
 
+import java.util.*;
+import java.util.List;
 import java.awt.*;
 
 import javax.swing.*;
@@ -14,8 +16,13 @@ public class Desk extends JPanel{
 	JPanel north;
 	JPanel south;
 	JPanel table;
+	List<Integer> eastList = new ArrayList<>();
+	List<Integer> westList = new ArrayList<>();
+	List<Integer> northList = new ArrayList<>();
+	List<Integer> southList = new ArrayList<>();
 
 	public Desk() {
+		
 		//set size
 		Dimension size = new Dimension(WIDTH, HEIGHT);
 		this.setPreferredSize(size);
@@ -64,6 +71,35 @@ public class Desk extends JPanel{
 		layout.setVerticalGroup(vSeqGroup);
 	}
 
-	
+	public void shuffleCard() {
+		// Initialize a new pair of cards
+		ArrayList<Integer> allCards = new ArrayList<>();
+		for(int i = 0; i < 52; i++) {
+			allCards.add(i);
+		}
+		
+		// shuffle the cards randomly
+		int times = new Random().nextInt(10);
+		for (int k = 0; k < times; k++) {
+			for (int i = 0; i < 52; i++) {
+				int idx = new Random().nextInt(52);
+				int temp = allCards.get(i);
+				allCards.set(i, allCards.get(idx));
+				allCards.set(idx, temp);
+			}
+		}
+		
+		// deal cards to each player
+		eastList = allCards.subList(0, 13);
+		westList = allCards.subList(13, 26);
+		northList = allCards.subList(26, 39);
+		southList = allCards.subList(39, 52);
+		
+//		System.out.println(eastList.toString());
+//		System.out.println(westList.toString());
+//		System.out.println(northList.toString());
+//		System.out.println(southList.toString());
+
+	}
 
 }

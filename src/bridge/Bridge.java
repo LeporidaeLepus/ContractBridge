@@ -7,8 +7,8 @@ import javax.swing.*;
 public class Bridge extends JFrame {
 	final int WIDTH = 1024;
 	final int HEIGHT = 850;
-	JPanel desk;
-	JPanel board;
+	Desk desk;
+	Board board;
 
 	public Bridge() {
 		super("Bridge");
@@ -24,9 +24,17 @@ public class Bridge extends JFrame {
 		this.add(board);
 	}
 	
+	public Desk getDesk() {
+		return this.desk;
+	}
+	
+	public Board getBoard() {
+		return this.board;
+	}
+	
 	
 	public static void main(String[] args) {
 		Bridge bridge = new Bridge();
-		
+		bridge.getDesk().shuffleCard();
 	}
 }
