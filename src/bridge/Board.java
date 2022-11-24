@@ -13,7 +13,7 @@ public class Board extends JPanel {
 
 	public Board() {
 		super();
-		this.setLayout(new GridLayout(4,1));
+		this.setLayout(new FlowLayout());
 		Dimension size = new Dimension(WIDTH, HEIGHT);
 		this.setPreferredSize(size);
 		this.setMaximumSize(size);
@@ -22,19 +22,26 @@ public class Board extends JPanel {
 		this.setVisible(true);
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		
+		Dimension labelSize = new Dimension(180, 50);
+		
 		JLabel name = new JLabel();
 		name.setText("User Name:");
+		name.setPreferredSize(labelSize);
 		this.add(name);
 		
 		JLabel position = new JLabel();
 		position.setText("Position:");
+		position.setPreferredSize(labelSize);
 		this.add(position);
 		
 		score = new JLabel();
 		score.setText("Score:");
+		score.setPreferredSize(labelSize);
 		this.add(score);
 		
 		start = new JButton("START");
+		Dimension buttonSize = new Dimension(150, 25);
+		start.setPreferredSize(buttonSize);
 		this.add(start);
 	}
 
