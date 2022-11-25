@@ -1,16 +1,17 @@
 package bridge;
 
-import java.awt.Color;
+import java.util.List;
 
-import javax.swing.*;
-
-public class VerticalCardFieldPanel extends JPanel {
-	final int WIDTH = 150;
-	final int HEIGHT = 450;
+public class VerticalCardFieldPanel extends CardField {
+	static final int WIDTH = 150;
+	static final int HEIGHT = 450;
+	List<Card> cards;
+	
 	public VerticalCardFieldPanel() {
-		super();
-		this.setBorder(BorderFactory.createLineBorder(Color.black));
-		this.setSize(WIDTH, HEIGHT);
-		this.setVisible(true);
+		super(WIDTH, HEIGHT);
+	}
+	
+	public void displayCards() {
+		
 	}
 }

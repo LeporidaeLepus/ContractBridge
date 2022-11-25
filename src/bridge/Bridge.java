@@ -43,7 +43,8 @@ public class Bridge extends JFrame {
 		}
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			this.desk.shuffleCard();
+			this.desk.shuffleCards();
+			this.desk.dealCards();
 		}
 	}
 	

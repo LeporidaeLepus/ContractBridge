@@ -11,15 +11,19 @@ public class Desk extends JPanel{
 	final int HEIGHT = 800;
 	final int CARD_HEIGHT = 150;
 	final int TABLE_LENGTH = 450;
-	JPanel east;
-	JPanel west;
-	JPanel north;
-	JPanel south;
+	CardField east;
+	CardField west;
+	CardField north;
+	CardField south;
 	JPanel table;
-	List<Integer> eastList = new ArrayList<>();
-	List<Integer> westList = new ArrayList<>();
-	List<Integer> northList = new ArrayList<>();
-	List<Integer> southList = new ArrayList<>();
+	List<Integer> eastIDs = new ArrayList<>();
+	List<Integer> westIDs = new ArrayList<>();
+	List<Integer> northIDs = new ArrayList<>();
+	List<Integer> southIDs = new ArrayList<>();
+	List<Card> eastCards = new ArrayList<>();
+	List<Card> westCards = new ArrayList<>();
+	List<Card> northCards = new ArrayList<>();
+	List<Card> southCards = new ArrayList<>();
 
 	public Desk() {
 		
@@ -71,7 +75,7 @@ public class Desk extends JPanel{
 		layout.setVerticalGroup(vSeqGroup);
 	}
 
-	public void shuffleCard() {
+	public void shuffleCards() {
 		// Initialize a new pair of cards
 		ArrayList<Integer> allCards = new ArrayList<>();
 		for(int i = 0; i < 52; i++) {
@@ -90,27 +94,79 @@ public class Desk extends JPanel{
 		}
 		
 		// deal cards to each player
-		eastList = allCards.subList(0, 13);
-		westList = allCards.subList(13, 26);
-		northList = allCards.subList(26, 39);
-		southList = allCards.subList(39, 52);
+		eastIDs = allCards.subList(0, 13);
+		westIDs = allCards.subList(13, 26);
+		northIDs = allCards.subList(26, 39);
+		southIDs = allCards.subList(39, 52);
 		
-		System.out.println(eastList.toString());
-		System.out.println(westList.toString());
-		System.out.println(northList.toString());
-		System.out.println(southList.toString());
+		System.out.println(eastIDs.toString());
+		System.out.println(westIDs.toString());
+		System.out.println(northIDs.toString());
+		System.out.println(southIDs.toString());
 	}
 	
-	public List<Integer> getCardList(String position){
+	public List<Integer> getCardIDs(String position){
 		switch (position) {
-		case "east":	return eastList;
-		case "west":	return westList;
-		case "north":	return northList;
-		case "south":	return southList;
+		case "east":	return eastIDs;
+		case "west":	return westIDs;
+		case "north":	return northIDs;
+		case "south":	return southIDs;
 		default:
 			System.err.println("Error in Desk.getCartList(), "
 					+ "argument must be one of east/west/north/south.");
 			return null;
 		}
 	}
+	
+	public void dealSelectedCards(String position) {
+		CardField cardField = null;
+		List<Integer> idsList = null;
+		List<Card> cardsList = null;
+		
+		// get selected variables
+		switch (position) {
+		case "east":	
+			cardField = this.east;
+			idsList = this.eastIDs;
+			cardsList = this.eastCards;	
+			break;
+		case "west":	
+			cardField = this.west;
+			idsList = this.westIDs;
+			cardsList = this.westCards;
+			break;
+		case "north":	
+			cardField = this.north;
+			idsList = this.northIDs;
+			cardsList = this.northCards;
+			break;
+		case "south":	
+			cardField = this.south;
+			idsList = this.southIDs;
+			cardsList = this.southCards;
+			break;
+		default:
+			System.err.println(position + "Error in Desk.dealSelectedCards(), "
+					+ "argument must be one of east/west/north/south.");
+		}
+		
+		// sort the cards in order
+		idsList.sort((a, b) -> a - b);
+		// refresh the cardList before deal new cards to it
+		cardsList.clear();
+		for (int i : idsList) {
+			cardsList.add(new Card(i));
+		}
+		cardField.setCardsList(cardsList);
+		cardField.repaint();
+	}
+	
+	public void dealCards() {
+		dealSelectedCards("east");
+		dealSelectedCards("west");
+		dealSelectedCards("north");
+		dealSelectedCards("south");
+	}
+	
+	
 }
