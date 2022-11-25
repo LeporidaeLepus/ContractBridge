@@ -9,8 +9,8 @@ import javax.swing.*;
 public class Desk extends JPanel{
 	final int WIDTH = 800;
 	final int HEIGHT = 800;
-	final int CARD_HEIGHT = 120;
-	final int TABLE_LENGTH = 500;
+	final int CARD_HEIGHT = 150;
+	final int TABLE_LENGTH = 450;
 	JPanel east;
 	JPanel west;
 	JPanel north;
@@ -95,11 +95,22 @@ public class Desk extends JPanel{
 		northList = allCards.subList(26, 39);
 		southList = allCards.subList(39, 52);
 		
-//		System.out.println(eastList.toString());
-//		System.out.println(westList.toString());
-//		System.out.println(northList.toString());
-//		System.out.println(southList.toString());
-
+		System.out.println(eastList.toString());
+		System.out.println(westList.toString());
+		System.out.println(northList.toString());
+		System.out.println(southList.toString());
 	}
-
+	
+	public List<Integer> getCardList(String position){
+		switch (position) {
+		case "east":	return eastList;
+		case "west":	return westList;
+		case "north":	return northList;
+		case "south":	return southList;
+		default:
+			System.err.println("Error in Desk.getCartList(), "
+					+ "argument must be one of east/west/north/south.");
+			return null;
+		}
+	}
 }

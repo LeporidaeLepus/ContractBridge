@@ -5,8 +5,8 @@ import java.awt.Color;
 import javax.swing.*;
 
 public class VerticalCardFieldPanel extends JPanel {
-	final int WIDTH = 120;
-	final int HEIGHT = 500;
+	final int WIDTH = 150;
+	final int HEIGHT = 450;
 	public VerticalCardFieldPanel() {
 		super();
 		this.setBorder(BorderFactory.createLineBorder(Color.black));

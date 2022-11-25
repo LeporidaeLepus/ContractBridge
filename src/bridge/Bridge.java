@@ -1,6 +1,8 @@
 package bridge;
 
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
@@ -22,6 +24,7 @@ public class Bridge extends JFrame {
 		this.add(desk);
 		board = new Board();
 		this.add(board);
+		board.getStart().addActionListener(new StartAction(desk));
 	}
 	
 	public Desk getDesk() {
@@ -32,9 +35,20 @@ public class Bridge extends JFrame {
 		return this.board;
 	}
 	
+	public class StartAction implements ActionListener{
+		Desk desk;
+		
+		public StartAction(Desk desk) {
+			this.desk = desk;
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			this.desk.shuffleCard();
+		}
+	}
+	
 	
 	public static void main(String[] args) {
 		Bridge bridge = new Bridge();
-		bridge.getDesk().shuffleCard();
 	}
 }

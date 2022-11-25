@@ -1,6 +1,7 @@
 package bridge;
 
 import java.awt.*;
+import java.awt.event.*;
 
 import javax.swing.*;
 
@@ -44,5 +45,8 @@ public class Board extends JPanel {
 		start.setPreferredSize(buttonSize);
 		this.add(start);
 	}
-
+	
+	public JButton getStart() {
+		return this.start;
+	}
 }
