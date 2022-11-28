@@ -151,7 +151,12 @@ public class Desk extends JPanel{
 		}
 		
 		// sort the cards in order
-		idsList.sort((a, b) -> a - b);
+		idsList.sort((a, b) -> {
+			if (a / 13 != b / 13)
+				return a / 13 - b / 13;
+			else
+				return b % 13 - a % 13;
+		});
 		// refresh the cardList before deal new cards to it
 		cardsList.clear();
 		for (int i : idsList) {
