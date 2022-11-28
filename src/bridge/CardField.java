@@ -38,20 +38,7 @@ public abstract class CardField extends JPanel {
 		this.displayCards();
 	}
 	
-	public void setCardsList() {
-		// refresh the cardList before set new cards to it
-		this.cards.clear();
-		// if the displayable is true, show the card to the player
-		if (this.displayable == true) {
-			for (int i : this.cardsIDs) {
-				this.cards.add(new Card(i));
-			}
-		}else {	// if the displayable is false, show the back of the card to the player
-			for (int i : this.cardsIDs) {
-				this.cards.add(new Card(-1));
-			}
-		}
-	}
+	public abstract void setCardsList();
 	
 	public abstract void displayCards();
 }

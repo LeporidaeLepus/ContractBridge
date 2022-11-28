@@ -12,14 +12,25 @@ public class HorizonCardField extends CardField {
 		super(WIDTH, HEIGHT);
 	}
 	
-//	public void setCardsList(List<Card> cards) {
-//		this.cards = cards;
-//	}
+	public void setCardsList() {
+		// refresh the cardList before set new cards to it
+		this.cards.clear();
+		// if the displayable is true, show the card to the player
+		if (this.displayable == true) {
+			for (int i : this.cardsIDs) {
+				this.cards.add(new Card(i, false));
+			}
+		}else {	// if the displayable is false, show the back of the card to the player
+			for (int i : this.cardsIDs) {
+				this.cards.add(new Card(-1, false));
+			}
+		}
+	}
 	
 	public void displayCards() {
-		int offset = cards.get(0).getWidth() / 3;
-		int x = (WIDTH - (offset * (cards.size() - 1) + cards.get(0).getWidth())) / 2;
-		int y = (HEIGHT - cards.get(0).getHeight()) / 2;
+		int offset = cards.get(0).getImageWidth() / 3;
+		int x = (WIDTH - (offset * (cards.size() - 1) + cards.get(0).getImageWidth())) / 2;
+		int y = (HEIGHT - cards.get(0).getImageHeight()) / 2;
 		for (Card c : cards) {
 //			System.out.println(c.id);
 			this.add(c, 0);

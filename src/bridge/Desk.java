@@ -43,6 +43,9 @@ public class Desk extends JPanel{
 		table = new JPanel();
 		table.setBorder(BorderFactory.createLineBorder(Color.black));
 		table.setSize(TABLE_LENGTH, TABLE_LENGTH);
+//		Card ca = new Card(1, true);
+//		ca.setIsRotated(true);
+//		table.add(ca);
 		
 		
 		// Set the layout of the desk
