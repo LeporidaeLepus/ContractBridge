@@ -36,13 +36,14 @@ public class Desk extends JPanel{
 		this.setVisible(true);
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		
-		north = new HorizonCardFieldPanel();
-		south = new HorizonCardFieldPanel();
-		west = new VerticalCardFieldPanel();
-		east = new VerticalCardFieldPanel();
+		north = new HorizonCardField();
+		south = new HorizonCardField();
+		west = new VerticalCardField();
+		east = new VerticalCardField();
 		table = new JPanel();
 		table.setBorder(BorderFactory.createLineBorder(Color.black));
 		table.setSize(TABLE_LENGTH, TABLE_LENGTH);
+		
 		
 		// Set the layout of the desk
 		GroupLayout layout = new GroupLayout(this);
@@ -121,29 +122,24 @@ public class Desk extends JPanel{
 	public void dealSelectedCards(String position) {
 		CardField cardField = null;
 		List<Integer> idsList = null;
-		List<Card> cardsList = null;
-		
 		// get selected variables
 		switch (position) {
 		case "east":	
 			cardField = this.east;
 			idsList = this.eastIDs;
-			cardsList = this.eastCards;	
 			break;
 		case "west":	
 			cardField = this.west;
 			idsList = this.westIDs;
-			cardsList = this.westCards;
 			break;
 		case "north":	
 			cardField = this.north;
 			idsList = this.northIDs;
-			cardsList = this.northCards;
 			break;
 		case "south":	
 			cardField = this.south;
 			idsList = this.southIDs;
-			cardsList = this.southCards;
+			cardField.setDisplayable(true);
 			break;
 		default:
 			System.err.println(position + "Error in Desk.dealSelectedCards(), "
@@ -157,13 +153,9 @@ public class Desk extends JPanel{
 			else
 				return b % 13 - a % 13;
 		});
-		// refresh the cardList before deal new cards to it
-		cardsList.clear();
-		for (int i : idsList) {
-			cardsList.add(new Card(i));
-		}
-		cardField.setCardsList(cardsList);
-		cardField.repaint();
+		
+		cardField.setIDsList(idsList);
+//		cardField.repaint();
 	}
 	
 	public void dealCards() {
@@ -172,6 +164,61 @@ public class Desk extends JPanel{
 		dealSelectedCards("north");
 		dealSelectedCards("south");
 	}
+	
+//	public void dealSelectedCards(String position) {
+//		CardField cardField = null;
+//		List<Integer> idsList = null;
+//		List<Card> cardsList = null;
+//		
+//		// get selected variables
+//		switch (position) {
+//		case "east":	
+//			cardField = this.east;
+//			idsList = this.eastIDs;
+//			cardsList = this.eastCards;	
+//			break;
+//		case "west":	
+//			cardField = this.west;
+//			idsList = this.westIDs;
+//			cardsList = this.westCards;
+//			break;
+//		case "north":	
+//			cardField = this.north;
+//			idsList = this.northIDs;
+//			cardsList = this.northCards;
+//			break;
+//		case "south":	
+//			cardField = this.south;
+//			idsList = this.southIDs;
+//			cardsList = this.southCards;
+//			break;
+//		default:
+//			System.err.println(position + "Error in Desk.dealSelectedCards(), "
+//					+ "argument must be one of east/west/north/south.");
+//		}
+//		
+//		// sort the cards in order
+//		idsList.sort((a, b) -> {
+//			if (a / 13 != b / 13)
+//				return a / 13 - b / 13;
+//			else
+//				return b % 13 - a % 13;
+//		});
+//		// refresh the cardList before deal new cards to it
+//		cardsList.clear();
+//		for (int i : idsList) {
+//			cardsList.add(new Card(i));
+//		}
+//		cardField.setCardsList(cardsList);
+//		cardField.repaint();
+//	}
+//	
+//	public void dealCards() {
+//		dealSelectedCards("east");
+//		dealSelectedCards("west");
+//		dealSelectedCards("north");
+//		dealSelectedCards("south");
+//	}
 	
 	
 }

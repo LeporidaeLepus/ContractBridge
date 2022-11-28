@@ -4,7 +4,7 @@ import java.awt.*;
 
 import javax.swing.*;
 
-public class Card {
+public class Card extends JPanel{
 	public int id;
 	Image img;
 	int height;
@@ -22,8 +22,10 @@ public class Card {
 		height = img.getHeight(null);
 		width = img.getWidth(null);
 		
-//		Dimension size = new Dimension(WIDTH, HEIGHT);
-//		this.setPreferredSize(size);
+		Dimension size = new Dimension(width, height);
+		this.setPreferredSize(size);
+		this.setBorder(BorderFactory.createLineBorder(Color.black));
+		this.setVisible(true);
 		
 	}
 	
@@ -39,9 +41,9 @@ public class Card {
 		return this.width;
 	}
 	
-//	public void paintComponent(Graphics g) {
-//		g.drawImage(img, 0, 0, WIDTH, HEIGHT, null);
-//	}
+	public void paintComponent(Graphics g) {
+		g.drawImage(img, 0, 0, width, height, null);
+	}
 	
 //	public static void main(String[] args) {
 //		JFrame frame = new JFrame();
