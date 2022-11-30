@@ -35,7 +35,7 @@ public abstract class CardField extends JPanel {
 	public void setIDsList(List<Integer> cardsIDs) {
 		this.cardsIDs = cardsIDs;
 		setCardsList();
-		this.repaint();
+//		this.repaint();
 		this.displayCards();
 	}
 	

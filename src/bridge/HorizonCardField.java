@@ -29,24 +29,20 @@ public class HorizonCardField extends CardField {
 	
 	public void displayCards() {
 		this.removeAll();
-		
 		if (cards == null ||cards.size() <= 0)	return;
 		
 		int len = cards.size();
 		int offset = cards.get(0).getImageWidth() / 3;
-		int x = offset * (len - 1) + (WIDTH - (offset * (len - 1) + cards.get(0).getImageWidth())) / 2;
+		int x = (WIDTH - (offset * (len - 1) + cards.get(0).getImageWidth())) / 2;		
 		int y = (HEIGHT - cards.get(0).getImageHeight()) / 2;
-		for (int i = len - 1; i >= 0; i--) {
+		for (int i = 0; i < len; i++) {
 			Card c = cards.get(i);
 //			System.out.println(c.id);
-			this.add(c);
+			this.add(c, 0);
 			c.setLocation(x, y);
 			c.repaint();
-			
-//			System.out.print(c.id + " ");
-			x -= offset;
+			this.repaint();
+			x += offset;
 		}
-//		System.out.println();
-//		System.out.println(this.cardsIDs);
 	}
 }

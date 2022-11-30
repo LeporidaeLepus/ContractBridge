@@ -160,7 +160,7 @@ public class Desk extends JPanel{
 		});
 		
 		cardField.setIDsList(idsList);
-		cardField.repaint();
+//		cardField.repaint();
 	}
 	
 	public void dealCards() {

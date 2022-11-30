@@ -28,6 +28,7 @@ public class VerticalCardField extends CardField {
 	}
 	
 	public void displayCards() {
+		this.removeAll();
 		if (cards == null ||cards.size() <= 0)	return;
 		
 		int offset = cards.get(0).getImageWidth() / 3;
@@ -39,6 +40,7 @@ public class VerticalCardField extends CardField {
 			this.add(c, 0);
 			c.setLocation(x, y);
 			c.repaint();
+			this.repaint();
 			y += offset;
 		}
 	}
