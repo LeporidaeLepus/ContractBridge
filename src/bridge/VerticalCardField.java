@@ -28,6 +28,8 @@ public class VerticalCardField extends CardField {
 	}
 	
 	public void displayCards() {
+		if (cards == null ||cards.size() <= 0)	return;
+		
 		int offset = cards.get(0).getImageWidth() / 3;
 		int x = (WIDTH - cards.get(0).getImageHeight()) / 2;
 		int y = (HEIGHT - (offset * (cards.size() - 1) + cards.get(0).getImageWidth())) / 2;

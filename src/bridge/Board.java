@@ -9,6 +9,7 @@ public class Board extends JPanel {
 	final int WIDTH = 200;
 	final int HEIGHT = 800;
 	JLabel score;
+	JLabel contract;
 	JButton start;
 	
 
@@ -44,9 +45,19 @@ public class Board extends JPanel {
 		Dimension buttonSize = new Dimension(150, 25);
 		start.setPreferredSize(buttonSize);
 		this.add(start);
+		
+		contract = new JLabel();
+		contract.setText("Contract:");
+		contract.setPreferredSize(labelSize);
+		contract.setMaximumSize(labelSize);
+		this.add(contract);
 	}
 	
 	public JButton getStart() {
 		return this.start;
+	}
+	
+	public void setContract(String str) {
+		this.contract.setText("Contract: " + str);
 	}
 }

@@ -24,7 +24,7 @@ public class Bridge extends JFrame {
 		this.add(desk);
 		board = new Board();
 		this.add(board);
-		board.getStart().addActionListener(new StartAction(desk));
+		board.getStart().addActionListener(new StartAction(desk, board));
 	}
 	
 	public Desk getDesk() {
@@ -37,14 +37,27 @@ public class Bridge extends JFrame {
 	
 	public class StartAction implements ActionListener{
 		Desk desk;
+		Board board;
 		
-		public StartAction(Desk desk) {
+		public StartAction(Desk desk, Board board) {
 			this.desk = desk;
+			this.board = board;
 		}
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			this.desk.isPlaying = true;
 			this.desk.shuffleCards();
 			this.desk.dealCards();
+			
+			String[] orderOptions = {"1", "2", "3", "4", "5", "6", "7"};
+			String order = (String)JOptionPane.showInputDialog(desk, "Choose the order: ", "Bid", 
+					JOptionPane.OK_OPTION, null, orderOptions, orderOptions[0]);
+			String[] suitOptions = {"♠", "♥", "♦", "♣", "NT"};
+			String suit = (String)JOptionPane.showInputDialog(desk, "Choose the trump suit: ", "Bid", 
+					JOptionPane.OK_OPTION, null, suitOptions, suitOptions[0]);
+			this.board.setContract(new String(order + " " + suit));
+			
+			
 		}
 	}
 	

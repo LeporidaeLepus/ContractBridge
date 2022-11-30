@@ -1,6 +1,7 @@
 package bridge;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.LayoutManager;
 import java.util.*;
 
@@ -41,4 +42,8 @@ public abstract class CardField extends JPanel {
 	public abstract void setCardsList();
 	
 	public abstract void displayCards();
+	
+	public void paintComponent(Graphics g) {
+		displayCards();
+	}
 }

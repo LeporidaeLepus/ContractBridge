@@ -28,26 +28,25 @@ public class HorizonCardField extends CardField {
 	}
 	
 	public void displayCards() {
+		this.removeAll();
+		
+		if (cards == null ||cards.size() <= 0)	return;
+		
+		int len = cards.size();
 		int offset = cards.get(0).getImageWidth() / 3;
-		int x = (WIDTH - (offset * (cards.size() - 1) + cards.get(0).getImageWidth())) / 2;
+		int x = offset * (len - 1) + (WIDTH - (offset * (len - 1) + cards.get(0).getImageWidth())) / 2;
 		int y = (HEIGHT - cards.get(0).getImageHeight()) / 2;
-		for (Card c : cards) {
+		for (int i = len - 1; i >= 0; i--) {
+			Card c = cards.get(i);
 //			System.out.println(c.id);
-			this.add(c, 0);
+			this.add(c);
 			c.setLocation(x, y);
 			c.repaint();
-			x += offset;
+			
+//			System.out.print(c.id + " ");
+			x -= offset;
 		}
+//		System.out.println();
+//		System.out.println(this.cardsIDs);
 	}
-//	public void paintComponent(Graphics g) {
-//		if (cards.size() <= 0)	return;
-//		
-//		int offset = cards.get(0).getWidth() / 3;
-//		int x = (WIDTH - (offset * (cards.size() - 1) + cards.get(0).getWidth())) / 2;
-//		int y = (HEIGHT - cards.get(0).getHeight()) / 2;
-//		for (Card c : cards) {
-//			boolean draw = g.drawImage(c.getImage(), x, y, c.getWidth(), c.getHeight(), null);
-//			x += offset;
-//		}
-//	}
 }

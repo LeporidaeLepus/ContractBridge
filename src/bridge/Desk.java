@@ -24,8 +24,10 @@ public class Desk extends JPanel{
 	List<Card> westCards = new ArrayList<>();
 	List<Card> northCards = new ArrayList<>();
 	List<Card> southCards = new ArrayList<>();
+	public boolean isPlaying;
 
 	public Desk() {
+		isPlaying = false;
 		
 		//set size
 		Dimension size = new Dimension(WIDTH, HEIGHT);
@@ -158,7 +160,7 @@ public class Desk extends JPanel{
 		});
 		
 		cardField.setIDsList(idsList);
-//		cardField.repaint();
+		cardField.repaint();
 	}
 	
 	public void dealCards() {
