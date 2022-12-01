@@ -6,17 +6,17 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
-public class Bridge extends JFrame {
+public class Bridge extends JPanel {
 	final int WIDTH = 1024;
 	final int HEIGHT = 850;
 	Desk desk;
 	Board board;
 
 	public Bridge() {
-		super("Bridge");
+//		super("Bridge");
 		
 		this.setLayout(new FlowLayout());
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+//		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setVisible(true);
 		this.setSize(WIDTH, HEIGHT);
 		
@@ -93,7 +93,7 @@ public class Bridge extends JFrame {
 	}
 	
 	
-	public static void main(String[] args) {
-		Bridge bridge = new Bridge();
-	}
+//	public static void main(String[] args) {
+//		Bridge bridge = new Bridge();
+//	}
 }

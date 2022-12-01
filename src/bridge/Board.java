@@ -32,7 +32,7 @@ public class Board extends JPanel {
 		this.add(name);
 		
 		JLabel position = new JLabel();
-		position.setText("Position:");
+		position.setText("Position: South");
 		position.setPreferredSize(labelSize);
 		this.add(position);
 		
