@@ -39,6 +39,10 @@ public abstract class CardField extends JPanel {
 		this.displayCards();
 	}
 	
+	public List<Card> getCardsList(){
+		return cards;
+	}
+	
 	public abstract void setCardsList();
 	
 	public abstract void displayCards();

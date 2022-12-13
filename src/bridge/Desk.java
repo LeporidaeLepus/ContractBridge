@@ -10,13 +10,13 @@ public class Desk extends JPanel{
 	final int WIDTH = 800;
 	final int HEIGHT = 800;
 	final int CARD_HEIGHT = 150;
-	final int TABLE_LENGTH = 450;
+	final int CENTER_LENGTH = 450;
 	
 	CardField east;
 	CardField west;
 	CardField north;
 	CardField south;
-	JPanel table;
+	Center center;
 	List<Integer> eastIDs = new ArrayList<>();
 	List<Integer> westIDs = new ArrayList<>();
 	List<Integer> northIDs = new ArrayList<>();
@@ -46,12 +46,12 @@ public class Desk extends JPanel{
 		south = new HorizonCardField();
 		west = new VerticalCardField();
 		east = new VerticalCardField();
-		table = new JPanel();
-		table.setBorder(BorderFactory.createLineBorder(Color.black));
-		table.setSize(TABLE_LENGTH, TABLE_LENGTH);
+		center = new Center(CENTER_LENGTH, CENTER_LENGTH);
+		center.displayCards();
+		
 //		Card ca = new Card(1, true);
 //		ca.setIsRotated(true);
-//		table.add(ca);
+//		center.add(ca);
 		
 		
 		// Set the layout of the desk
@@ -62,9 +62,9 @@ public class Desk extends JPanel{
 		
 		// Set the horizon group
 		GroupLayout.ParallelGroup hParalGroup = layout.createParallelGroup();
-		hParalGroup.addComponent(north,TABLE_LENGTH,TABLE_LENGTH,TABLE_LENGTH);
-		hParalGroup.addComponent(table,TABLE_LENGTH,TABLE_LENGTH,TABLE_LENGTH);
-		hParalGroup.addComponent(south,TABLE_LENGTH,TABLE_LENGTH,TABLE_LENGTH);
+		hParalGroup.addComponent(north,CENTER_LENGTH,CENTER_LENGTH,CENTER_LENGTH);
+		hParalGroup.addComponent(center,CENTER_LENGTH,CENTER_LENGTH,CENTER_LENGTH);
+		hParalGroup.addComponent(south,CENTER_LENGTH,CENTER_LENGTH,CENTER_LENGTH);
 		GroupLayout.SequentialGroup hSeqGroup = layout.createSequentialGroup();
 		hSeqGroup.addGap(20);
 		hSeqGroup.addComponent(west,CARD_HEIGHT,CARD_HEIGHT,CARD_HEIGHT);
@@ -74,9 +74,9 @@ public class Desk extends JPanel{
 		
 		// Set the vertical group
 		GroupLayout.ParallelGroup vParalGroup = layout.createParallelGroup();
-		vParalGroup.addComponent(west,TABLE_LENGTH,TABLE_LENGTH,TABLE_LENGTH);
-		vParalGroup.addComponent(table,TABLE_LENGTH,TABLE_LENGTH,TABLE_LENGTH);
-		vParalGroup.addComponent(east,TABLE_LENGTH,TABLE_LENGTH,TABLE_LENGTH);
+		vParalGroup.addComponent(west,CENTER_LENGTH,CENTER_LENGTH,CENTER_LENGTH);
+		vParalGroup.addComponent(center,CENTER_LENGTH,CENTER_LENGTH,CENTER_LENGTH);
+		vParalGroup.addComponent(east,CENTER_LENGTH,CENTER_LENGTH,CENTER_LENGTH);
 		GroupLayout.SequentialGroup vSeqGroup = layout.createSequentialGroup();
 		vSeqGroup.addGap(20);
 		vSeqGroup.addComponent(north,CARD_HEIGHT,CARD_HEIGHT,CARD_HEIGHT);

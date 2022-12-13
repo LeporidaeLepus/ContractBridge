@@ -1,6 +1,7 @@
 package bridge;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
 import javax.swing.*;
@@ -13,6 +14,7 @@ public class Card extends JPanel{
 	int imgheight;
 	int imgwidth;
 	boolean isRotated;
+	boolean playable;
 
 	public Card() {
 		super();
@@ -22,6 +24,7 @@ public class Card extends JPanel{
 		this();
 		this.id = id;
 		this.isRotated = isRotated;
+		this.playable = false;
 		String name = new String("./img/" + (id + 1) + ".png");
 		img = new ImageIcon(name).getImage();
 		imgheight = img.getHeight(null);
@@ -41,6 +44,13 @@ public class Card extends JPanel{
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.setVisible(true);
 		
+		this.addMouseListener(new MouseAdapter() {
+			// play the selected card
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				
+			}
+		});
 	}
 	
 	public Image getImage() {
@@ -65,6 +75,14 @@ public class Card extends JPanel{
 	
 	public void setIsRotated(boolean flag) {
 		this.isRotated = flag;
+	}
+	
+	public void setPlayable(boolean flag) {
+		this.playable = flag;
+	}
+	
+	public boolean getPlayable() {
+		return this.playable;
 	}
 	
 	public BufferedImage rotate(Image img) {
