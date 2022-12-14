@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.*;
 
 public class Card extends JPanel{
+	CardField cardField;
 	public int id;
 	Image img;
 	int height;
@@ -44,13 +45,12 @@ public class Card extends JPanel{
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.setVisible(true);
 		
-		this.addMouseListener(new MouseAdapter() {
-			// play the selected card
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				
-			}
-		});
+		this.addMouseListener(new PlayCard(this));
+	}
+	
+	public Card(int id, boolean isRotated, CardField cardField) {
+		this(id, isRotated);
+		this.cardField = cardField;
 	}
 	
 	public Image getImage() {
@@ -85,6 +85,10 @@ public class Card extends JPanel{
 		return this.playable;
 	}
 	
+	public CardField getCardField() {
+		return this.cardField;
+	}
+	
 	public BufferedImage rotate(Image img) {
 		BufferedImage bimg = new BufferedImage(imgheight, imgwidth,BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = bimg.createGraphics();
@@ -106,6 +110,54 @@ public class Card extends JPanel{
 		}
 		
 	}
+	
+	public class PlayCard extends MouseAdapter {
+		Card card;
+		
+		public PlayCard(Card card) {
+			this.card = card;
+		}
+		
+		// play the selected card
+		@Override
+		public void mousePressed(MouseEvent e) {
+			System.out.println(card.id + " " + card.getPlayable());
+			CardField cf = this.card.getCardField();
+			// cards can only be played when they are on a cardField and are playable by the player
+			if (cf == null || this.card.getPlayable() == false)
+				return;
+			
+			Center center = cf.getDesk().getCenter();
+			switch(cf.getPosition()) {
+			case "north": 
+				center.cardsSlot[0] = this.card;
+				break;
+			case "east":
+				center.cardsSlot[1] = this.card;
+				break;
+			case "south":
+				center.cardsSlot[2] = this.card;
+				break;
+			case "west":
+				center.cardsSlot[3] = this.card;
+				break;
+			default:
+				System.err.println("Error in Card.PlayCard.mouseReleased(), "
+						+ "position must be one of east/west/north/south.");
+			}
+			center.repaint();
+			
+			if(!cf.getCardsList().remove(this.card)) {
+				System.err.println("Play card " + card.id + " failed");
+			}
+			cf.repaint();
+			
+		}
+		
+		
+	}
+	
+	
 	
 //	public static void main(String[] args) {
 //		JFrame frame = new JFrame();

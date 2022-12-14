@@ -3,6 +3,8 @@ package bridge;
 import java.util.*;
 import java.util.List;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.*;
 
@@ -42,12 +44,19 @@ public class Desk extends JPanel{
 		this.setVisible(true);
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		
-		north = new HorizonCardField();
-		south = new HorizonCardField();
-		west = new VerticalCardField();
-		east = new VerticalCardField();
+		north = new HorizonCardField(this, "north");
+		south = new HorizonCardField(this, "south");
+		west = new VerticalCardField(this, "west");
+		east = new VerticalCardField(this, "east");
 		center = new Center(CENTER_LENGTH, CENTER_LENGTH);
 		center.displayCards();
+		
+		north.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				System.out.println("cf");
+			}
+		});
 		
 //		Card ca = new Card(1, true);
 //		ca.setIsRotated(true);
@@ -83,6 +92,11 @@ public class Desk extends JPanel{
 		vSeqGroup.addGroup(vParalGroup);
 		vSeqGroup.addComponent(south,CARD_HEIGHT,CARD_HEIGHT,CARD_HEIGHT);
 		layout.setVerticalGroup(vSeqGroup);
+		
+	}
+	
+	public Center getCenter() {
+		return this.center;
 	}
 	
 	public CardField getCardField(String position) {
@@ -187,13 +201,15 @@ public class Desk extends JPanel{
 					+ "argument must be one of east/west/north/south.");
 		}
 		
-		// sort the cards in order
+		// sort the cards in order "♠", "♥", "♦", "♣" from K to A
 		idsList.sort((a, b) -> {
 			if (a / 13 != b / 13)
 				return a / 13 - b / 13;
 			else
 				return b % 13 - a % 13;
 		});
+		
+//		System.out.println(idsList.toString());
 		
 		cardField.setIDsList(idsList);
 //		cardField.repaint();

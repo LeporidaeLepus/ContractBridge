@@ -10,8 +10,9 @@ import javax.swing.JPanel;
 
 public class Center extends JPanel {
 	
-	Card[] cardsSlot;
 	static final int MARGIN = 30;
+	
+	public Card[] cardsSlot;
 
 	public Center() {
 		super();
