@@ -11,6 +11,8 @@ public class Bridge extends JPanel {
 	final int HEIGHT = 850;
 	Desk desk;
 	Board board;
+	int nTurns;
+	int playerOnTurn;
 
 	public Bridge() {
 //		super("Bridge");
@@ -45,6 +47,13 @@ public class Bridge extends JPanel {
 		}
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			// cannot start a game before finish the one is playing
+			if(this.desk.isPlaying == true) {
+				JOptionPane.showMessageDialog(desk, "Please finish this game before starting a new one.", 
+						null, JOptionPane.PLAIN_MESSAGE);
+				return;
+			}
+			
 			this.desk.isPlaying = true;
 			// shuffle and deal cards
 			this.desk.shuffleCards();
@@ -106,7 +115,12 @@ public class Bridge extends JPanel {
 			partnerField.displayCards();
 			//partnerField.repaint();
 			
+			// Remind the banker to play the paetner's cards
+			JOptionPane.showMessageDialog(desk, "You are the banker and need to play your partner's cards.", 
+					"Reminder" , JOptionPane.PLAIN_MESSAGE);
 		}
+		
+		
 	}
 	
 	

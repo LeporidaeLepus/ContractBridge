@@ -11,6 +11,8 @@ public class Board extends JPanel {
 	JLabel score;
 	JLabel contract;
 	JButton start;
+	JLabel wins;
+	int nWins;
 	
 
 	public Board() {
@@ -24,6 +26,7 @@ public class Board extends JPanel {
 		this.setVisible(true);
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		
+		nWins = 0;
 		Dimension labelSize = new Dimension(180, 50);
 		
 		JLabel name = new JLabel();
@@ -51,6 +54,12 @@ public class Board extends JPanel {
 		contract.setPreferredSize(labelSize);
 		contract.setMaximumSize(labelSize);
 		this.add(contract);
+		
+		wins = new JLabel();
+		wins.setText("Number of Wins: " + nWins + " / 13");
+		wins.setPreferredSize(labelSize);
+		wins.setMaximumSize(labelSize);
+		this.add(wins);
 	}
 	
 	public JButton getStart() {
@@ -59,5 +68,14 @@ public class Board extends JPanel {
 	
 	public void setContract(String str) {
 		this.contract.setText("Contract: " + str);
+	}
+	
+	public void plusOneWins() {
+		this.nWins++;
+		wins.setText("Number of Wins: " + nWins + " / 13");
+	}
+	
+	public int getNumOfWins() {
+		return this.nWins;
 	}
 }
