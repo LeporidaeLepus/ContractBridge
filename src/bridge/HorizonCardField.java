@@ -44,5 +44,6 @@ public class HorizonCardField extends CardField {
 			x += offset;
 		}
 		this.repaint();
+		
 	}
 }
