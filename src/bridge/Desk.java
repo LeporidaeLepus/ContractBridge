@@ -33,7 +33,7 @@ public class Desk extends JPanel{
 	int bankerId = -1;
 	protected int playerOnTurn;
 	protected int count;
-	protected String suit;
+	protected String suit;	// suit of every turn
 	protected String trumpSuit;
 	protected int[] cardIDsSlot = {-1, -1, -1, -1};
 	public int nTurns;
@@ -107,6 +107,7 @@ public class Desk extends JPanel{
 	}
 	
 	public Desk(Bridge bridge) {
+		this();
 		this.bridge = bridge;
 	}
 	
@@ -250,10 +251,12 @@ public class Desk extends JPanel{
 	}
 	
 	public void startPlaying() {
+		this.playerOnTurn = this.bankerId;
 		// Create a thread for each player
 		Thread[] playerThreads = new Thread[4];
 		for(int i = 0; i < 4; i++) {
-			playerThreads[i] = new Thread();
+			playerThreads[i] = new Thread(new Playing(i));
+			playerThreads[i].start();
 		}
 	}
 	
@@ -261,25 +264,59 @@ public class Desk extends JPanel{
 		this.playerOnTurn = (this.playerOnTurn + 1) % 4;
 	}
 	
+	public synchronized void checkCount() {
+		if(count == 4) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			// get the winner
+			int winner = 0;
+			for(int i = 1; i < 4; i++) {
+				if (cardIDsSlot[i] > cardIDsSlot[winner])
+					winner = i;
+			}
+			// update banker's win times
+			if (winner == bankerId || winner == (bankerId + 2) / 4) {
+				bridge.getBoard().plusOneWins();
+			}
+			
+			// reset count
+			count = 0;
+			// update number of turns
+			nTurns++;
+			// reset center and cardIDsSlot
+			for(int i = 0; i < 4; i++) {
+				cardIDsSlot[i] = -1;
+				center.cardsSlot[i] = null;
+			}
+			center.repaint();
+		}
+	}	
+	
+	
 	public class Playing implements Runnable{
 //		Desk desk;
 		int playerId;
 		CardField cardField;
 		
-		public Playing( int i) {
+		public Playing(int i) {
 //			this.desk = desk;
 			this.playerId = i;
 			switch(i) {
-			case 1 :
+			case 0 :
 				cardField = getCardField("north");
 				break;
-			case 2 :
+			case 1 :
 				cardField = getCardField("east");
 				break;
-			case 3 :
+			case 2 :
 				cardField = getCardField("south");
 				break;
-			case 4 :
+			case 3 :
 				cardField = getCardField("west");
 				break;
 			default:
@@ -297,10 +334,29 @@ public class Desk extends JPanel{
 			return -1;
 		}
 		
+		private void setSuit(int cardID) {
+			switch(cardID/13) {
+			case 0:
+				suit = "♠";
+				break;
+			case 1:
+				suit = "♥";
+				break;
+			case 2:
+				suit = "♦";
+				break;
+			case 3:
+				suit = "♣";
+				break;
+			}
+		}
+		
 		private int playCardsWithNoTrump() {
 			List<Integer> IDs = cardField.getIDsList();
 			int id = IDs.remove(0);
 			cardField.setIDsList(IDs);
+			cardField.remove(0);
+			cardField.repaint();
 			return id;
 		}
 		
@@ -316,6 +372,8 @@ public class Desk extends JPanel{
 				if(IDs.get(i) / 13 == trumpId) {
 					CardID = IDs.remove(i);
 					cardField.setIDsList(IDs);
+					cardField.remove(0);
+					cardField.repaint();
 					break;
 				}
 				// play cards with trump suit when there is no cards with current suit left 
@@ -329,28 +387,19 @@ public class Desk extends JPanel{
 		}
 		
 		public void run() {
-			while (!cardField.getDisplayable() && nTurns != 13) {
+			while (nTurns != 13) {
 				// players play cards when on their turns
 				if(playerOnTurn == this.playerId) {
+					System.out.println(playerId);
+					
+					int cardID = -1;
 					// computer plays cards
 					if(!cardField.getDisplayable()) {
-						int cardID = -1;
+						// if this is the first one to play, 
+						// set the suit of this turn as the suit of the card it selected
 						if (count == 0){
 							cardID = playCardsWithNoTrump();
-							switch(cardID/13) {
-							case 0:
-								suit = "♠";
-								break;
-							case 1:
-								suit = "♥";
-								break;
-							case 2:
-								suit = "♦";
-								break;
-							case 3:
-								suit = "♣";
-								break;
-							}
+							setSuit(cardID);
 						}
 						else {
 							// computer plays card automatically depends on the suit
@@ -360,6 +409,8 @@ public class Desk extends JPanel{
 								if(IDs.get(i) / 13 == suitId) {
 									cardID = IDs.remove(i);
 									cardField.setIDsList(IDs);
+									cardField.remove(0);
+									cardField.repaint();
 									break;
 								}
 								// play cards with trump suit when there is no cards with current suit left 
@@ -369,50 +420,36 @@ public class Desk extends JPanel{
 								}
 							}
 						}
-						
 						cardIDsSlot[playerId] = cardID;
 					}
 					// user play cards
 					else if (cardField.getDisplayable()) {
 						// wait until user played the card
-						while(!cardField.isPlayed);
+						while(cardField.isPlayed == false) {
+							try {
+								Thread.sleep(100);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+						// wait until get the selected card's id
+						while(cardIDsSlot[playerId] == -1);						
 						
-						
+						// if this is the first one to play, 
+						// set the suit of this turn as the suit of the card it selected
+						if (count == 0) {
+							setSuit(cardIDsSlot[playerId]);
+						}
 					}
 				
 					count++;
-					// when the turn is over
-					if(count == 4) {
-						try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						
-						// get the winner
-						int winner = 0;
-						for(int i = 1; i < 4; i++) {
-							if (cardIDsSlot[i] > cardIDsSlot[winner])
-								winner = i;
-						}
-						// update banker's win times
-						if (winner == bankerId || winner == (bankerId + 2) / 4) {
-							bridge.getBoard().plusOneWins();
-						}
-						
-						count = 0;
-						
-						for(int i = 0; i < 4; i++) {
-							cardIDsSlot[i] = -1;
-							center.cardsSlot[i] = null;
-						}
-						center.repaint();
-					}
-					
+					// check whether the turn is over
+					checkCount();
+					// this player's turn is end
 					moveToNextPlayer();
+					cardField.isPlayed = false;
+					System.out.println(playerOnTurn);
 				}
-				
 				
 			}
 		}

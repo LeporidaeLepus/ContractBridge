@@ -128,12 +128,17 @@ public class Card extends JPanel{
 			if (cf == null || this.card.getPlayable() == false)
 				return;
 			
-			//cards can only be played when the players are on their turn and hadn't play any cards this turn
-			if (cf.getDesk().playerOnTurn != cf.getPositionId() || cf.isPlayed)
+			// cards can only be played when the players are on their turn and hadn't play any cards this turn
+			if (cf.getDesk().playerOnTurn != cf.getPositionId() || cf.isPlayed) {
+				System.out.println("not on turn or has been played");
 				return;
+			}
+			
+			// mark this cardField as isPlayed
+			Center center = cf.getDesk().getCenter();
+			cf.isPlayed = true;
 			
 			// remove the selected card from card field and draw it on the center
-			Center center = cf.getDesk().getCenter();
 			switch(cf.getPosition()) {
 			case "north": 
 				center.cardsSlot[0] = this.card;
@@ -158,7 +163,12 @@ public class Card extends JPanel{
 			}
 			cf.repaint();
 			
-			//
+			// remove the selected card's id from the cardField's IDsList
+			int index = cf.getIDsList().indexOf(new Integer(id));
+			cf.getIDsList().remove(index);
+			
+			//add this selected card's id to cardField's cardIDsSlot
+			cf.getDesk().cardIDsSlot[cf.getPositionId()] = this.card.id;
 		}
 		
 		

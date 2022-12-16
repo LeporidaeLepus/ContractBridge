@@ -135,7 +135,7 @@ public class Bridge extends JPanel {
 					"Reminder" , JOptionPane.PLAIN_MESSAGE);
 			
 			//start playing cards
-			this.desk.startPlaying();
+			desk.startPlaying();
 		}
 		
 		
