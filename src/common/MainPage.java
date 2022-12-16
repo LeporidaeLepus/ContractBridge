@@ -23,7 +23,8 @@ public class MainPage extends JFrame {
 	
 	public static void main(String[] args) {
 		MainPage mainPage = new MainPage();
-		Bridge bridge = new Bridge();
+		User user = new User("A");
+		Bridge bridge = new Bridge(user);
 		mainPage.add(bridge);
 		
 	}

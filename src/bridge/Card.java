@@ -123,10 +123,16 @@ public class Card extends JPanel{
 		public void mousePressed(MouseEvent e) {
 			System.out.println(card.id + " " + card.getPlayable());
 			CardField cf = this.card.getCardField();
+			
 			// cards can only be played when they are on a cardField and are playable by the player
 			if (cf == null || this.card.getPlayable() == false)
 				return;
 			
+			//cards can only be played when the players are on their turn and hadn't play any cards this turn
+			if (cf.getDesk().playerOnTurn != cf.getPositionId() || cf.isPlayed)
+				return;
+			
+			// remove the selected card from card field and draw it on the center
 			Center center = cf.getDesk().getCenter();
 			switch(cf.getPosition()) {
 			case "north": 
@@ -152,6 +158,7 @@ public class Card extends JPanel{
 			}
 			cf.repaint();
 			
+			//
 		}
 		
 		

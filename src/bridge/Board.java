@@ -5,9 +5,13 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+import common.User;
+
 public class Board extends JPanel {
 	final int WIDTH = 200;
 	final int HEIGHT = 800;
+	User user;
+	JLabel name;
 	JLabel score;
 	JLabel contract;
 	JButton start;
@@ -29,8 +33,8 @@ public class Board extends JPanel {
 		nWins = 0;
 		Dimension labelSize = new Dimension(180, 50);
 		
-		JLabel name = new JLabel();
-		name.setText("User Name:");
+		name = new JLabel();
+		name.setText("User Name: ");
 		name.setPreferredSize(labelSize);
 		this.add(name);
 		
@@ -40,7 +44,7 @@ public class Board extends JPanel {
 		this.add(position);
 		
 		score = new JLabel();
-		score.setText("Score:");
+		score.setText("Score: ");
 		score.setPreferredSize(labelSize);
 		this.add(score);
 		
@@ -62,8 +66,29 @@ public class Board extends JPanel {
 		this.add(wins);
 	}
 	
+	public Board(User user) {
+		this();
+		this.user = user;
+		name.setText("User Name: " + user.username);
+		score.setText("Score: " + user.cash);
+	}
+	
+	public User getUser() {
+		return this.user;
+	}
+	
+	public void setUser(User user) {
+		this.user = user;
+		name.setText("User Name: " + user.username);
+		score.setText("Score: " + user.cash);
+	}
+	
 	public JButton getStart() {
 		return this.start;
+	}
+	
+	public void setScore() {
+		this.score.setText("Score: " + user.cash);
 	}
 	
 	public void setContract(String str) {

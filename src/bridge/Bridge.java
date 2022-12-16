@@ -6,13 +6,14 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
+import common.User;
+
 public class Bridge extends JPanel {
 	final int WIDTH = 1024;
 	final int HEIGHT = 850;
+	User user;
 	Desk desk;
 	Board board;
-	int nTurns;
-	int playerOnTurn;
 
 	public Bridge() {
 //		super("Bridge");
@@ -22,11 +23,21 @@ public class Bridge extends JPanel {
 		this.setVisible(true);
 		this.setSize(WIDTH, HEIGHT);
 		
-		desk = new Desk();
+		desk = new Desk(this);
 		this.add(desk);
 		board = new Board();
 		this.add(board);
 		board.getStart().addActionListener(new StartAction(desk, board));
+	}
+	
+	public Bridge(User user) {
+		this();
+		this.user = user;
+		this.board.setUser(user);
+	}
+	
+	public User getUser() {
+		return this.user;
 	}
 	
 	public Desk getDesk() {
@@ -54,6 +65,9 @@ public class Bridge extends JPanel {
 				return;
 			}
 			
+			board.getUser().cash -= 50;
+			board.setScore();
+			
 			this.desk.isPlaying = true;
 			// shuffle and deal cards
 			this.desk.shuffleCards();
@@ -73,6 +87,7 @@ public class Bridge extends JPanel {
 						JOptionPane.PLAIN_MESSAGE, null, suitOptions, suitOptions[0]);
 			}
 			this.board.setContract(new String(order + " " + suit));
+			this.desk.trumpSuit = suit;
 			
 			// Display the cards of the banker's teammate
 			String banker = this.desk.getBanker();
@@ -118,6 +133,9 @@ public class Bridge extends JPanel {
 			// Remind the banker to play the paetner's cards
 			JOptionPane.showMessageDialog(desk, "You are the banker and need to play your partner's cards.", 
 					"Reminder" , JOptionPane.PLAIN_MESSAGE);
+			
+			//start playing cards
+			this.desk.startPlaying();
 		}
 		
 		

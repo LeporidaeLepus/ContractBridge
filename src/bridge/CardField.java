@@ -14,6 +14,7 @@ public abstract class CardField extends JPanel {
 	List<Integer> cardsIDs;
 	List<Card> cards;
 	boolean displayable;
+	protected boolean isPlayed;
 
 	public CardField(Desk desk, String position) {
 		super();
@@ -24,6 +25,7 @@ public abstract class CardField extends JPanel {
 		
 		cards = new ArrayList<Card>();
 		displayable = false;
+		isPlayed = false;
 	}
 	
 	public CardField(Desk desk, String position, int width, int height) {
@@ -36,11 +38,19 @@ public abstract class CardField extends JPanel {
 		this.displayable = flag;
 	}
 	
+	public boolean getDisplayable() {
+		return this.displayable;
+	}
+	
 	public void setIDsList(List<Integer> cardsIDs) {
 		this.cardsIDs = cardsIDs;
 		setCardsList();
 //		this.repaint();
 		this.displayCards();
+	}
+	
+	public List<Integer> getIDsList(){
+		return this.cardsIDs;
 	}
 	
 	public Desk getDesk() {
@@ -49,6 +59,17 @@ public abstract class CardField extends JPanel {
 	
 	public String getPosition() {
 		return this.position;
+	}
+	
+	public int getPositionId() {
+		switch(this.position) {
+		case "north":	return 0;
+		case "east":	return 1;
+		case "south":	return 2;
+		case "west":	return 3;
+		}
+		
+		return -1;
 	}
 	
 	public List<Card> getCardsList(){
