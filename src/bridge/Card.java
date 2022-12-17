@@ -9,6 +9,7 @@ import javax.swing.*;
 public class Card extends JPanel{
 	CardField cardField;
 	public int id;
+	public int suitId;
 	Image img;
 	int height;
 	int width;
@@ -24,6 +25,7 @@ public class Card extends JPanel{
 	public Card(int id, boolean isRotated) {
 		this();
 		this.id = id;
+		this.suitId = id / 13;
 		this.isRotated = isRotated;
 		this.playable = false;
 		String name = new String("./img/" + (id + 1) + ".png");

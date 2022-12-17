@@ -65,8 +65,8 @@ public class Bridge extends JPanel {
 				return;
 			}
 			
-			board.getUser().cash -= 50;
-			board.setScore();
+//			board.getUser().cash -= 25;
+//			board.setScore();
 			
 			this.desk.isPlaying = true;
 			// shuffle and deal cards
@@ -135,7 +135,12 @@ public class Bridge extends JPanel {
 					"Reminder" , JOptionPane.PLAIN_MESSAGE);
 			
 			//start playing cards
-			desk.startPlaying();
+			try {
+				desk.startPlaying();
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		
 		

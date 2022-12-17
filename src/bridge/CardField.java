@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.LayoutManager;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -11,7 +12,7 @@ import javax.swing.JPanel;
 public abstract class CardField extends JPanel {
 	Desk desk;
 	String position;
-	List<Integer> cardsIDs;
+	CopyOnWriteArrayList<Integer> cardsIDs;
 	List<Card> cards;
 	boolean displayable;
 	protected boolean isPlayed;
@@ -23,6 +24,7 @@ public abstract class CardField extends JPanel {
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 		this.setVisible(true);
 		
+		cardsIDs = new CopyOnWriteArrayList<Integer>();
 		cards = new ArrayList<Card>();
 		displayable = false;
 		isPlayed = false;
@@ -42,14 +44,14 @@ public abstract class CardField extends JPanel {
 		return this.displayable;
 	}
 	
-	public void setIDsList(List<Integer> cardsIDs) {
+	public void setIDsList(CopyOnWriteArrayList<Integer> cardsIDs) {
 		this.cardsIDs = cardsIDs;
 		setCardsList();
 //		this.repaint();
 		this.displayCards();
 	}
 	
-	public List<Integer> getIDsList(){
+	public CopyOnWriteArrayList<Integer> getIDsList(){
 		return this.cardsIDs;
 	}
 	

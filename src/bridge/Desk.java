@@ -2,6 +2,7 @@ package bridge;
 
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -19,10 +20,10 @@ public class Desk extends JPanel{
 	CardField north;
 	CardField south;
 	Center center;
-	List<Integer> eastIDs = new ArrayList<>();
-	List<Integer> westIDs = new ArrayList<>();
-	List<Integer> northIDs = new ArrayList<>();
-	List<Integer> southIDs = new ArrayList<>();
+	CopyOnWriteArrayList<Integer> eastIDs = new CopyOnWriteArrayList<>();
+	CopyOnWriteArrayList<Integer> westIDs = new CopyOnWriteArrayList<>();
+	CopyOnWriteArrayList<Integer> northIDs = new CopyOnWriteArrayList<>();
+	CopyOnWriteArrayList<Integer> southIDs = new CopyOnWriteArrayList<>();
 	List<Card> eastCards = new ArrayList<>();
 	List<Card> westCards = new ArrayList<>();
 	List<Card> northCards = new ArrayList<>();
@@ -174,7 +175,7 @@ public class Desk extends JPanel{
 
 	public void shuffleCards() {
 		// Initialize a new pair of cards
-		ArrayList<Integer> allCards = new ArrayList<>();
+		CopyOnWriteArrayList<Integer> allCards = new CopyOnWriteArrayList<>();
 		for(int i = 0; i < 52; i++) {
 			allCards.add(i);
 		}
@@ -191,10 +192,24 @@ public class Desk extends JPanel{
 		}
 		
 		// deal cards to each player
-		eastIDs = allCards.subList(0, 13);
-		westIDs = allCards.subList(13, 26);
-		northIDs = allCards.subList(26, 39);
-		southIDs = allCards.subList(39, 52);
+		for(int i = 0; i < 13; i++) {
+			eastIDs.add(allCards.get(i));
+		}
+		for(int i = 13; i < 26; i++) {
+			westIDs.add(allCards.get(i));
+		}
+		for(int i = 26; i < 39; i++) {
+
+			northIDs.add(allCards.get(i));
+		}
+		for(int i = 39; i < 52; i++) {
+			southIDs.add(allCards.get(i));
+		}
+		
+//		eastIDs = (CopyOnWriteArrayList<Integer>)allCards.subList(0, 13);
+//		westIDs = (CopyOnWriteArrayList<Integer>)allCards.subList(13, 26);
+//		northIDs = (CopyOnWriteArrayList<Integer>)allCards.subList(26, 39);
+//		southIDs = (CopyOnWriteArrayList<Integer>)allCards.subList(39, 52);
 		
 		System.out.println(eastIDs.toString());
 		System.out.println(westIDs.toString());
@@ -204,7 +219,7 @@ public class Desk extends JPanel{
 	
 	public void dealSelectedCards(String position) {
 		CardField cardField = null;
-		List<Integer> idsList = null;
+		CopyOnWriteArrayList<Integer> idsList = null;
 		// get selected variables
 		switch (position) {
 		case "east":	
@@ -250,7 +265,7 @@ public class Desk extends JPanel{
 		dealSelectedCards("south");
 	}
 	
-	public void startPlaying() {
+	public void startPlaying() throws InterruptedException {
 		this.playerOnTurn = this.bankerId;
 		// Create a thread for each player
 		Thread[] playerThreads = new Thread[4];
@@ -258,6 +273,52 @@ public class Desk extends JPanel{
 			playerThreads[i] = new Thread(new Playing(i));
 			playerThreads[i].start();
 		}
+		
+		// create a new thread to monitor whether the game has been finished
+		Thread monitor = new Thread(() -> {
+			while(true) {
+				// wait until the player threads have been created
+				while(!playerThreads[0].isAlive() || !playerThreads[1].isAlive() || !playerThreads[2].isAlive() || !playerThreads[3].isAlive()) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				break;
+			}
+			System.out.println("start monitoring");
+				
+			while(isPlaying == true) {
+				if(!playerThreads[0].isAlive() && !playerThreads[1].isAlive() && !playerThreads[2].isAlive() && !playerThreads[3].isAlive()) {
+					isPlaying = false;
+					if (bridge.getBoard().getNumOfWins() > bridge.getBoard().nContract + 6) {
+						bridge.board.getUser().cash += 50;
+						bridge.board.setScore();
+					}
+					else {
+						bridge.board.getUser().cash += 50;
+						bridge.board.setScore();
+					}
+//					JOptionPane.showMessageDialog(null, "Do you want to start a new game or return?", 
+//							"Reminder" , JOptionPane.PLAIN_MESSAGE);
+					break;
+				}
+					
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			
+		});
+		monitor.start();
+		
+		
 	}
 	
 	public void moveToNextPlayer() {
@@ -274,15 +335,7 @@ public class Desk extends JPanel{
 			}
 			
 			// get the winner
-			int winner = 0;
-			for(int i = 1; i < 4; i++) {
-				if (cardIDsSlot[i] > cardIDsSlot[winner])
-					winner = i;
-			}
-			// update banker's win times
-			if (winner == bankerId || winner == (bankerId + 2) / 4) {
-				bridge.getBoard().plusOneWins();
-			}
+			getTheWinner();
 			
 			// reset count
 			count = 0;
@@ -296,6 +349,50 @@ public class Desk extends JPanel{
 			center.repaint();
 		}
 	}	
+	
+	protected int getSuitId(String suit) {
+		switch(suit) {
+		case "♠":	return 0;
+		case "♥":	return 1;
+		case "♦":	return 2;
+		case "♣":	return 3;
+		}
+		return -1;
+	}
+	
+	public void getTheWinner() {
+		int winner = 0;
+		while(cardIDsSlot[winner]/13 != getSuitId(suit) && winner < 4)
+			winner++;
+		for(int i = winner; i < 4; i++) {
+			if(cardIDsSlot[i]/13 != getSuitId(suit)) {
+				if(cardIDsSlot[i]/13 == getSuitId(trumpSuit)) {
+					if(cardIDsSlot[winner]/13 == getSuitId(trumpSuit))
+						winner = (cardIDsSlot[i]%13 > cardIDsSlot[winner]%13) ? i : winner;
+					else
+						winner = i;
+				}	
+				else continue;
+			}
+			else {
+				if(cardIDsSlot[winner]/13 == getSuitId(trumpSuit) && suit != trumpSuit) {
+					continue;
+				}
+				else {
+					winner = (cardIDsSlot[i]%13 > cardIDsSlot[winner]%13) ? i : winner;
+				}
+			}
+			
+			System.out.print(cardIDsSlot[i] + " ");
+			if (cardIDsSlot[i] < cardIDsSlot[winner])
+				winner = i;
+		}
+		
+		// update banker's win times
+		if (winner == bankerId || winner == (bankerId + 2) / 4) {
+			bridge.getBoard().plusOneWins();
+		}
+	}
 	
 	
 	public class Playing implements Runnable{
@@ -324,16 +421,6 @@ public class Desk extends JPanel{
 			}
 		}
 		
-		private int getSuitId(String suit) {
-			switch(suit) {
-			case "♠":	return 0;
-			case "♥":	return 1;
-			case "♦":	return 2;
-			case "♣":	return 3;
-			}
-			return -1;
-		}
-		
 		private void setSuit(int cardID) {
 			switch(cardID/13) {
 			case 0:
@@ -352,10 +439,10 @@ public class Desk extends JPanel{
 		}
 		
 		private int playCardsWithNoTrump() {
-			List<Integer> IDs = cardField.getIDsList();
+			CopyOnWriteArrayList<Integer> IDs = cardField.getIDsList();
 			int id = IDs.remove(0);
 			cardField.setIDsList(IDs);
-			cardField.remove(0);
+//			cardField.getCardsList().remove(0);
 			cardField.repaint();
 			return id;
 		}
@@ -366,21 +453,25 @@ public class Desk extends JPanel{
 			}
 			
 			int CardID = -1;
-			List<Integer> IDs = cardField.getIDsList();
+			CopyOnWriteArrayList<Integer> IDs = cardField.getIDsList();
 			int trumpId = getSuitId(trump);
 			for(int i = 0; i < IDs.size(); i++) {
 				if(IDs.get(i) / 13 == trumpId) {
-					CardID = IDs.remove(i);
-					cardField.setIDsList(IDs);
-					cardField.remove(0);
-					cardField.repaint();
+					CardID = IDs.get(i);
 					break;
 				}
 				// play cards with trump suit when there is no cards with current suit left 
-				else if(IDs.get(i) / 13 > trumpId || i == IDs.size() - 1) {
-					CardID = playCardsWithNoTrump();
+				else if(IDs.get(i) / 13 > trumpId) {
 					break;
 				}
+			}
+			if(CardID != -1) {
+				IDs.remove(IDs.indexOf(CardID));
+				cardField.setIDsList(IDs);
+//				cardField.getCardsList().remove(0);
+				cardField.repaint();
+			}else {
+				CardID = playCardsWithNoTrump();
 			}
 
 			return CardID;
@@ -390,40 +481,14 @@ public class Desk extends JPanel{
 			while (nTurns != 13) {
 				// players play cards when on their turns
 				if(playerOnTurn == this.playerId) {
-					System.out.println(playerId);
+//					System.out.println(playerId);
+					System.out.println(cardField.getPosition());
+					
 					
 					int cardID = -1;
-					// computer plays cards
-					if(!cardField.getDisplayable()) {
-						// if this is the first one to play, 
-						// set the suit of this turn as the suit of the card it selected
-						if (count == 0){
-							cardID = playCardsWithNoTrump();
-							setSuit(cardID);
-						}
-						else {
-							// computer plays card automatically depends on the suit
-							int suitId = getSuitId(suit);
-							List<Integer> IDs = cardField.getIDsList();
-							for(int i = 0; i < IDs.size(); i++) {
-								if(IDs.get(i) / 13 == suitId) {
-									cardID = IDs.remove(i);
-									cardField.setIDsList(IDs);
-									cardField.remove(0);
-									cardField.repaint();
-									break;
-								}
-								// play cards with trump suit when there is no cards with current suit left 
-								else if(IDs.get(i) / 13 > suitId || i == IDs.size() - 1) {
-									cardID = playCardsWithTrumpOf(trumpSuit);
-									break;
-								}
-							}
-						}
-						cardIDsSlot[playerId] = cardID;
-					}
+					
 					// user play cards
-					else if (cardField.getDisplayable()) {
+					if (cardField.getDisplayable()) {
 						// wait until user played the card
 						while(cardField.isPlayed == false) {
 							try {
@@ -441,6 +506,51 @@ public class Desk extends JPanel{
 							setSuit(cardIDsSlot[playerId]);
 						}
 					}
+					// computer plays cards
+					else {
+						System.out.println(cardField.getDisplayable());
+						// if this is the first one to play, 
+						// set the suit of this turn as the suit of the card it selected
+						if (count == 0){
+							cardID = playCardsWithNoTrump();
+							setSuit(cardID);
+						}
+						else {
+							// computer plays card automatically depends on the suit
+							int suitId = getSuitId(suit);
+							CopyOnWriteArrayList<Integer> IDs = cardField.getIDsList();
+//							int len = IDs.size();
+//							System.out.println(len);
+//							int i = 0;
+							ListIterator<Integer> iterator = IDs.listIterator();
+//							while (iterator.hasNext()){
+							for(int i = 0; i < IDs.size(); i++) {
+								
+								if(IDs.get(i) / 13 == suitId) {
+									cardID = IDs.get(i);
+									break;
+								}
+								// play cards with trump suit when there is no cards with current suit left 
+								if(IDs.get(i) / 13 > suitId) {
+									break;
+								}
+//								i++;
+							}
+							if (cardID != -1) {
+								IDs.remove(IDs.indexOf(cardID));
+								cardField.setIDsList(IDs);
+//								cardField.getCardsList().remove(0);
+								cardField.repaint();
+							}
+							else {
+								cardID = playCardsWithTrumpOf(trumpSuit);
+							}
+						}
+						cardIDsSlot[playerId] = cardID;
+						center.cardsSlot[playerId] = new Card(cardID, true);
+						center.repaint();
+						System.out.println(cardField.getPosition() + " "  + cardField.getIDsList().size() + " " + cardField.getCardsList().size());
+					}
 				
 					count++;
 					// check whether the turn is over
@@ -448,68 +558,19 @@ public class Desk extends JPanel{
 					// this player's turn is end
 					moveToNextPlayer();
 					cardField.isPlayed = false;
-					System.out.println(playerOnTurn);
+				}
+				else {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+//					System.out.println(playerOnTurn);
 				}
 				
 			}
 		}
 	}
-	
-	
-//	public void dealSelectedCards(String position) {
-//		CardField cardField = null;
-//		List<Integer> idsList = null;
-//		List<Card> cardsList = null;
-//		
-//		// get selected variables
-//		switch (position) {
-//		case "east":	
-//			cardField = this.east;
-//			idsList = this.eastIDs;
-//			cardsList = this.eastCards;	
-//			break;
-//		case "west":	
-//			cardField = this.west;
-//			idsList = this.westIDs;
-//			cardsList = this.westCards;
-//			break;
-//		case "north":	
-//			cardField = this.north;
-//			idsList = this.northIDs;
-//			cardsList = this.northCards;
-//			break;
-//		case "south":	
-//			cardField = this.south;
-//			idsList = this.southIDs;
-//			cardsList = this.southCards;
-//			break;
-//		default:
-//			System.err.println(position + "Error in Desk.dealSelectedCards(), "
-//					+ "argument must be one of east/west/north/south.");
-//		}
-//		
-//		// sort the cards in order
-//		idsList.sort((a, b) -> {
-//			if (a / 13 != b / 13)
-//				return a / 13 - b / 13;
-//			else
-//				return b % 13 - a % 13;
-//		});
-//		// refresh the cardList before deal new cards to it
-//		cardsList.clear();
-//		for (int i : idsList) {
-//			cardsList.add(new Card(i));
-//		}
-//		cardField.setCardsList(cardsList);
-//		cardField.repaint();
-//	}
-//	
-//	public void dealCards() {
-//		dealSelectedCards("east");
-//		dealSelectedCards("west");
-//		dealSelectedCards("north");
-//		dealSelectedCards("south");
-//	}
-	
 	
 }

@@ -17,6 +17,7 @@ public class Board extends JPanel {
 	JButton start;
 	JLabel wins;
 	int nWins;
+	protected int nContract;
 	
 
 	public Board() {
@@ -93,6 +94,7 @@ public class Board extends JPanel {
 	
 	public void setContract(String str) {
 		this.contract.setText("Contract: " + str);
+		this.nContract = Integer.parseInt(str.split(" ")[0]);
 	}
 	
 	public void plusOneWins() {
